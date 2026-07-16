@@ -1,0 +1,16 @@
+package org.courier.logisticstrackingsystem.entity;
+
+public enum TrackingHistoryStatus {
+	SHIPMENT_CREATED,
+    PICKED_UP,
+    RECEIVED_AT_ORIGIN_HUB,
+    DEPARTED_FROM_ORIGIN_HUB,
+    IN_TRANSIT,
+    ARRIVED_AT_DESTINATION_HUB,
+    OUT_FOR_DELIVERY,
+    DELIVERED,
+    DELIVERY_FAILED,
+    RETURN_INITIATED,
+    RETURNED_TO_SENDER,
+    CANCELLED
+}
