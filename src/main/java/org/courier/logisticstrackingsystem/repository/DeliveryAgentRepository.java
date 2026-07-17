@@ -1,5 +1,6 @@
 package org.courier.logisticstrackingsystem.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.courier.logisticstrackingsystem.entity.DeliveryAgent;
@@ -10,5 +11,7 @@ public interface DeliveryAgentRepository extends JpaRepository<DeliveryAgent, In
 	Optional<DeliveryAgent> findByVehicleNumber(String vehicleNumber);
 
 	Optional<DeliveryAgent> findByDeliveryAgentPhone(String deliveryAgentPhone);
+
+	List<DeliveryAgent> findByRatingGreaterThan(Integer rating);
 
 }
