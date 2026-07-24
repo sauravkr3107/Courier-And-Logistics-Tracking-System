@@ -10,6 +10,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -39,6 +41,7 @@ public class Shipment {
 	@CreationTimestamp
 	private LocalDateTime shipmentDateTime;
 	private LocalDate deliveryDate;
+	@Enumerated(EnumType.STRING)
 	private ShipmentStatus shipmentStatus;
 	
 	@JoinColumn

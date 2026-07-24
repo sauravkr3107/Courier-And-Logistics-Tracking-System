@@ -21,48 +21,50 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/customer")
 public class CustomerController {
-	
+
 	@Autowired
 	private CustomerService customerService;
-	
+
 	@PostMapping
 	public ResponseEntity<ResponseStructure<Customer>> saveCustomer(@RequestBody Customer customer) {
 		return customerService.saveCustomer(customer);
 	}
-	
+
 	@GetMapping
 	public ResponseEntity<ResponseStructure<List<Customer>>> getAllCustomer() {
 		return customerService.getAllCustomer();
 	}
-	
+
 	@GetMapping("/customerId/{customerId}")
 	public ResponseEntity<ResponseStructure<Customer>> getCustomerById(@PathVariable Integer customerId) {
 		return customerService.getCustomerById(customerId);
 	}
-	
-	@GetMapping("/Email/{email}")
+
+	@GetMapping("/email/{email}")
 	public ResponseEntity<ResponseStructure<Customer>> getCustomerByEmail(@PathVariable String email) {
 		return customerService.getCustomerByEmail(email);
 	}
-	
+
 	@PatchMapping("/customerId/{customerId}")
-    public ResponseEntity<ResponseStructure<Customer>> updateCustomer(@PathVariable Integer customerId, @RequestBody Map<String, Object> map) {
-    	return customerService.updateCustomer(customerId, map);
-    }
-	
+	public ResponseEntity<ResponseStructure<Customer>> updateCustomer(@PathVariable Integer customerId,
+			@RequestBody Map<String, Object> map) {
+		return customerService.updateCustomer(customerId, map);
+	}
+
 	@DeleteMapping("/customerId/{customerId}")
-	public ResponseEntity<ResponseStructure<String>> deleteCustomer(Integer customerId) {
+	public ResponseEntity<ResponseStructure<String>> deleteCustomer(@PathVariable Integer customerId) {
 		return customerService.deleteCustomer(customerId);
 	}
-	
+
 	@GetMapping("/contact/{customerPhone}")
-	public ResponseEntity<ResponseStructure<Customer>> getCustomerByContact(String customerPhone) {
+	public ResponseEntity<ResponseStructure<Customer>> getCustomerByContact(@PathVariable String customerPhone) {
 		return customerService.getCustomerByContact(customerPhone);
 	}
-	
+
 	@GetMapping("/page/{pageNumber}/{pageSize}/{fieldName}")
-	public ResponseEntity<ResponseStructure<Page<Customer>>> getCustomerByPaginationAndSorting(Integer pageNumber, Integer pageSize, String fieldName) {
+	public ResponseEntity<ResponseStructure<Page<Customer>>> getCustomerByPaginationAndSorting(
+			@PathVariable Integer pageNumber, @PathVariable Integer pageSize, @PathVariable String fieldName) {
 		return customerService.getCustomerByPaginationAndSorting(pageNumber, pageSize, fieldName);
 	}
-	
+
 }

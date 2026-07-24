@@ -11,6 +11,7 @@ import org.courier.logisticstrackingsystem.exceptions.IdNotFoundException;
 import org.courier.logisticstrackingsystem.exceptions.NoRecordAvailableException;
 import org.courier.logisticstrackingsystem.exceptions.VehicleNumberNotFoundException;
 import org.courier.logisticstrackingsystem.repository.DeliveryAgentRepository;
+import org.courier.logisticstrackingsystem.repository.ShipmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +23,23 @@ public class DeliveryAgentServiceImpl implements DeliveryAgentService {
 	@Autowired
 	private DeliveryAgentRepository deliveryAgentRepository;
 	
+	@Autowired
+	private ShipmentRepository shipmentRepository;
+	
 	@Override
 	public ResponseEntity<ResponseStructure<DeliveryAgent>> saveDeliveryAgent(DeliveryAgent deliveryAgent) {
+		
+		if (deliveryAgentRepository.existsByDeliveryAgentPhone(deliveryAgent.getDeliveryAgentPhone())) {
+			throw new RuntimeException("Contact Number already exists");
+		}
+		
+		if (!deliveryAgent.getDeliveryAgentPhone().matches("\\d{10}")) {
+			throw new RuntimeException("Contact Number must be exactly 10 digits");
+		}
+		
+		if (deliveryAgentRepository.existsByVehicleNumber(deliveryAgent.getVehicleNumber())) {
+			throw new RuntimeException("Vehicle Number must be unique");
+		}
 		
 		DeliveryAgent saveDeliveryAgent = deliveryAgentRepository.save(deliveryAgent);
 		
@@ -149,9 +165,21 @@ public class DeliveryAgentServiceImpl implements DeliveryAgentService {
 					deliveryAgent.setDeliveryAgentName((String) value);
 					break;
 				case "deliveryAgentPhone":
+					if (deliveryAgentRepository.existsByDeliveryAgentPhone(deliveryAgent.getDeliveryAgentPhone())) {
+						throw new RuntimeException("Contact Number already exists");
+					}
+					
+					if (!deliveryAgent.getDeliveryAgentPhone().matches("\\d{10}")) {
+						throw new RuntimeException("Contact Number must be exactly 10 digits");
+					}
+					
 					deliveryAgent.setDeliveryAgentPhone((String) value);
 					break;
 				case "vehicleNumber":
+					if (deliveryAgentRepository.existsByVehicleNumber(deliveryAgent.getVehicleNumber())) {
+						throw new RuntimeException("Vehicle Number must be unique");
+					}
+					
 					deliveryAgent.setVehicleNumber((String) value);
 					break;
 				case "availablityStatus":
@@ -184,6 +212,11 @@ public class DeliveryAgentServiceImpl implements DeliveryAgentService {
 		ResponseStructure<String> response = new ResponseStructure<String>();
 		
 		if (deliveryAgent.isPresent()) {
+			
+			if (shipmentRepository.existsByDeliveryAgentDeliveryAgentId(deliveryAgentId)) {
+				throw new IllegalArgumentException("Delivery Agent cannot be deleted because shipment is assigned");
+			}
+			
 			deliveryAgentRepository.delete(deliveryAgent.get());
 			
 			response.setStatusCode(HttpStatus.OK.value());

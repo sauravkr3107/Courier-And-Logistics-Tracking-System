@@ -3,6 +3,8 @@ package org.courier.logisticstrackingsystem.entity;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -24,8 +26,10 @@ public class Payment {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer paymentId;
 	private Double amount;
-	private String paymentMethod;
-	private String paymentStatus;
+	@Enumerated(EnumType.STRING)
+	private PaymentMethod paymentMethod;
+	@Enumerated(EnumType.STRING)
+	private PaymentStatus paymentStatus;
 	private LocalDateTime paymentDateTime; 
 	
 	@JoinColumn

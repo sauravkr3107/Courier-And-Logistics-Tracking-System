@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -32,6 +31,6 @@ public class DeliveryAgent {
 	private Integer rating;
 	
 	@JsonIgnore
-	@OneToMany(mappedBy = "deliveryAgent", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "deliveryAgent")
 	private List<Shipment> shipments;
 }

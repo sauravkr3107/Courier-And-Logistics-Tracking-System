@@ -14,4 +14,8 @@ public interface DeliveryAgentRepository extends JpaRepository<DeliveryAgent, In
 
 	List<DeliveryAgent> findByRatingGreaterThan(Integer rating);
 
+	boolean existsByDeliveryAgentPhone(String deliveryAgentPhone);
+
+	boolean existsByVehicleNumber(String vehicleNumber);
+
 }

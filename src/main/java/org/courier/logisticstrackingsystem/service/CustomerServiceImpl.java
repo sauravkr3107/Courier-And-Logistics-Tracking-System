@@ -11,6 +11,7 @@ import org.courier.logisticstrackingsystem.exceptions.EmailNotFoundException;
 import org.courier.logisticstrackingsystem.exceptions.IdNotFoundException;
 import org.courier.logisticstrackingsystem.exceptions.NoRecordAvailableException;
 import org.courier.logisticstrackingsystem.repository.CustomerRepository;
+import org.courier.logisticstrackingsystem.repository.ShipmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,9 +25,24 @@ public class CustomerServiceImpl implements CustomerService {
 	
 	@Autowired
 	private CustomerRepository customerRepository;
+	
+	@Autowired
+	private ShipmentRepository shipmentRepository;
 
 	@Override
 	public ResponseEntity<ResponseStructure<Customer>> saveCustomer(Customer customer) {
+		
+		if (customerRepository.existsByEmail(customer.getEmail())) {
+			throw new RuntimeException("Email already exists");
+		}
+		
+		if (customerRepository.existsByCustomerPhone(customer.getCustomerPhone())) {
+			throw new RuntimeException("Phone Number already exixts");
+		}
+		
+		if (!customer.getCustomerPhone().matches("\\d{10}")) {
+			throw new RuntimeException("Contact number must be exactly 10 digits");
+		}
 		
 		Customer saveCustomer = customerRepository.save(customer);
 		
@@ -115,9 +131,21 @@ public class CustomerServiceImpl implements CustomerService {
 					customer.setCustomerName((String) value);
 					break;
 				case "email":
+					if (customerRepository.existsByEmail(customer.getEmail())) {
+						throw new RuntimeException("Email already exists");
+					}
+					
 					customer.setEmail((String) value);
 					break;
 				case "customerPhone":
+					if (customerRepository.existsByCustomerPhone(customer.getCustomerPhone())) {
+						throw new RuntimeException("Phone Number already exixts");
+					}
+					
+					if (!customer.getCustomerPhone().matches("\\d{10}")) {
+						throw new RuntimeException("Contact number must be exactly 10 digits");
+					}
+	
 					customer.setCustomerPhone((String) value);
 					break;
 				case "address":
@@ -147,6 +175,11 @@ public class CustomerServiceImpl implements CustomerService {
 		ResponseStructure<String> response = new ResponseStructure<String>();
 		
 		if (customer.isPresent()) {
+			
+			if (!shipmentRepository.existsByCustomerCustomerId(customerId)) {
+				throw new IllegalArgumentException("Customer cannot be deleted because shipment does not exists");
+			}
+			
 			customerRepository.delete(customer.get());
 			
 			response.setStatusCode(HttpStatus.OK.value());
