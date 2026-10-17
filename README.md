@@ -1,59 +1,84 @@
-# 🏦 Bank Management System
+# 🚚 Courier and Logistics Tracking System
 
-A **Bank Management System** developed using Java and Spring Boot that provides RESTful APIs to manage banks, customer accounts, and banking transactions. The application uses Spring Data JPA and Hibernate for database operations and PostgreSQL for persistent data storage.
+A **Courier and Logistics Tracking System** developed using Java and Spring Boot to manage shipments, customers, delivery agents, warehouses, packages, payments, and shipment tracking history. The application provides RESTful APIs for managing courier operations, tracking shipment progress, and enforcing logistics business rules.
 
 ## 🚀 Technologies Used
 
 - **Java** – Core programming language
-- **Spring Boot** – Application development and configuration
-- **Spring Data JPA** – Database interaction and repository management
-- **Hibernate** – ORM (Object-Relational Mapping)
+- **Spring Boot** – Backend application development
+- **Spring Data JPA** – Database access and repository management
+- **Hibernate** – Object-Relational Mapping (ORM)
 - **PostgreSQL** – Relational database management system
 - **REST APIs** – Communication between clients and the backend
 - **Maven** – Dependency management and build automation
 - **Postman** – API testing
 
-## ✨ Features
+## ✨ Key Features
 
-### 🏦 Bank Management
-- Create and manage bank records.
-- Retrieve bank details by ID.
-- Retrieve bank details using address-related information.
-- Update existing bank information.
-- Delete bank records subject to business rules.
-- Validate bank details before saving.
+### 👥 Customer Management
 
-### 💳 Account Management
-- Create and manage bank accounts.
-- Associate accounts with existing banks.
-- Ensure account numbers are unique.
-- Support savings and current account types.
-- Apply minimum balance requirements according to account type.
+- Create and manage customer records.
+- Maintain customer information associated with shipments.
+- Retrieve customer details through REST APIs.
 
-### 💰 Transaction Management
-- Deposit money into an account.
-- Withdraw money subject to sufficient balance.
-- Transfer money between accounts.
-- Validate that transaction amounts are greater than zero.
-- Prevent withdrawals and transfers that exceed the available balance.
+### 📦 Package Management
 
-### ✅ Data Validation and Business Rules
-- Validate IFSC codes and contact number uniqueness.
-- Ensure contact numbers contain exactly 10 digits.
-- Validate that PIN codes contain exactly 6 digits.
-- Require an address when creating a bank.
-- Prevent account creation when the associated bank does not exist.
-- Apply business rules before processing transactions.
+- Manage package details, including weight and dimensions.
+- Support different package types.
+- Identify fragile packages.
+- Apply additional charges for fragile items.
+
+### 🚚 Shipment Management
+
+- Create and manage shipments.
+- Associate shipments with customers, warehouses, delivery agents, packages, and payment records.
+- Generate and maintain unique tracking numbers.
+- Retrieve shipment details using shipment IDs or tracking numbers.
+- Manage shipment status throughout the delivery process.
+
+### 📍 Shipment Tracking
+
+- Maintain tracking history for shipments.
+- Record shipment status updates and remarks.
+- Track shipment progress through different delivery stages.
+- Retrieve shipment tracking information using a tracking number.
+
+### 🏢 Warehouse Management
+
+- Manage warehouse information.
+- Associate shipments with their relevant warehouses.
+- Maintain warehouse capacity information.
+
+### 🧑‍✈️ Delivery Agent Management
+
+- Manage delivery agent details.
+- Assign delivery agents to shipments.
+- Prevent shipment assignment when an agent is unavailable.
+
+### 💳 Payment Management
+
+- Maintain payment information associated with shipments.
+- Associate payment records with the relevant shipment.
+- Support payment status tracking according to the implemented business rules.
+
+### ⚙️ Business Logic and Validation
+
+- Ensure tracking numbers are unique.
+- Calculate shipment charges based on package weight.
+- Apply additional charges for fragile packages.
+- Prevent assignment of unavailable delivery agents.
+- Maintain relationships between shipments and their associated entities.
+- Validate incoming data before saving records.
 
 ## 🏗️ Project Architecture
 
-The application follows a layered architecture to separate responsibilities and improve maintainability.
+The application follows a layered architecture to separate API handling, business logic, database access, and entity management.
 
 ```text
-Bank Management System
+Courier and Logistics Tracking System
 │
 ├── Controller Layer
-│   └── Handles HTTP requests and REST endpoints
+│   └── Handles REST API requests and responses
 │
 ├── Service Layer
 │   └── Implements business logic and validations
@@ -62,28 +87,36 @@ Bank Management System
 │   └── Performs database operations using Spring Data JPA
 │
 ├── Entity Layer
-│   └── Defines database entities and relationships
+│   ├── Customer
+│   ├── Shipment
+│   ├── PackageEntity
+│   ├── DeliveryAgent
+│   ├── WareHouse
+│   ├── Payment
+│   └── TrackingHistory
 │
 └── Database
     └── PostgreSQL
 ```
 
-## 🔄 How It Works
+## 🔄 How the Application Works
 
-1. A client sends an HTTP request to a REST API endpoint.
-2. The controller receives the request and passes it to the service layer.
-3. The service layer executes business logic and validates the request.
-4. The repository layer interacts with PostgreSQL through Spring Data JPA and Hibernate.
-5. The application returns an appropriate HTTP response to the client.
+1. A customer and package are registered in the system.
+2. A shipment is created and associated with the required customer, warehouse, package, payment, and delivery information.
+3. The application validates shipment details and generates or stores a unique tracking number.
+4. Shipping charges are calculated based on package weight, with additional charges for fragile packages.
+5. An available delivery agent is assigned to the shipment.
+6. Shipment status updates are recorded in the tracking history.
+7. Clients can retrieve shipment information and track delivery progress through REST APIs.
 
 ## 🛠️ Prerequisites
 
-Make sure the following tools are installed:
+Install the following tools before running the project:
 
 - Java Development Kit (JDK)
 - Maven
 - PostgreSQL
-- An IDE such as Eclipse or IntelliJ IDEA
+- Eclipse, IntelliJ IDEA, or another Java IDE
 - Postman for API testing
 
 ## ⚙️ Installation and Setup
@@ -97,23 +130,21 @@ git clone <your-github-repository-url>
 ### 2. Navigate to the Project Directory
 
 ```bash
-cd Bank-Management-System
+cd Courier-and-Logistics-Tracking-System
 ```
 
-### 3. Create a PostgreSQL Database
-
-Open PostgreSQL and create a database:
+### 3. Create the PostgreSQL Database
 
 ```sql
-CREATE DATABASE bank_management;
+CREATE DATABASE courier_logistics;
 ```
 
 ### 4. Configure Database Properties
 
-Update your `src/main/resources/application.properties` file:
+Update `src/main/resources/application.properties`:
 
 ```properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/bank_management
+spring.datasource.url=jdbc:postgresql://localhost:5432/courier_logistics
 spring.datasource.username=${DB_USERNAME}
 spring.datasource.password=${DB_PASSWORD}
 
@@ -122,13 +153,11 @@ spring.jpa.show-sql=true
 spring.jpa.properties.hibernate.format_sql=true
 ```
 
-Configure `DB_USERNAME` and `DB_PASSWORD` as environment variables before running the application. Keep database credentials out of your source code.
+Set the `DB_USERNAME` and `DB_PASSWORD` environment variables before running the application. Do not commit database credentials to GitHub.
 
-**Note:** `ddl-auto=update` is suitable for local development. For production environments, consider using a database migration tool.
+**Note:** The `ddl-auto=update` setting is intended for development. Database migration tools are preferable for production environments.
 
 ### 5. Run the Application
-
-Using Maven:
 
 ```bash
 mvn spring-boot:run
@@ -136,62 +165,63 @@ mvn spring-boot:run
 
 Alternatively, run the main Spring Boot application class from your IDE.
 
-Once the application starts, access the configured API endpoints using Postman.
+Once the application starts, use Postman to test your configured REST API endpoints.
 
 ## 🔗 REST API Endpoints
 
-The following is an example endpoint structure. Replace or adjust the paths and HTTP methods to match your actual controller mappings.
+The following endpoints are illustrative. Update the paths and HTTP methods to match your actual controller mappings.
 
-| HTTP Method | Endpoint | Purpose |
-|---|---|---|
-| POST | `/api/banks` | Create a bank |
-| GET | `/api/banks/{bankId}` | Retrieve a bank by ID |
-| GET | `/api/banks` | Retrieve all banks |
-| PUT | `/api/banks/{bankId}` | Update bank details |
-| DELETE | `/api/banks/{bankId}` | Delete a bank |
-| POST | `/api/accounts` | Create an account |
-| GET | `/api/accounts/{accountId}` | Retrieve an account |
-| POST | `/api/accounts/{accountId}/deposit` | Deposit money |
-| POST | `/api/accounts/{accountId}/withdraw` | Withdraw money |
-| POST | `/api/accounts/transfer` | Transfer money |
+| HTTP Method | Example Endpoint                           | Purpose                   |
+| ----------- | ------------------------------------------ | ------------------------- |
+| POST        | `/api/customers`                           | Create a customer         |
+| GET         | `/api/customers/{id}`                      | Retrieve customer details |
+| POST        | `/api/packages`                            | Register a package        |
+| GET         | `/api/packages/{id}`                       | Retrieve package details  |
+| POST        | `/api/warehouses`                          | Register a warehouse      |
+| POST        | `/api/delivery-agents`                     | Register a delivery agent |
+| POST        | `/api/shipments`                           | Create a shipment         |
+| GET         | `/api/shipments/{id}`                      | Retrieve shipment details |
+| GET         | `/api/shipments/tracking/{trackingNumber}` | Track a shipment          |
+| PUT         | `/api/shipments/{id}/status`               | Update shipment status    |
+| GET         | `/api/shipments/{id}/tracking-history`     | Retrieve tracking history |
 
 ## 🧪 Testing
 
-The REST APIs can be tested using Postman.
+Use Postman to test the application's REST APIs and business rules.
 
-Test scenarios may include:
+Important test scenarios include:
 
-- Creating a bank with valid and invalid data.
-- Retrieving existing and non-existing banks.
-- Creating an account with a valid bank association.
-- Testing duplicate account numbers.
-- Depositing and withdrawing valid amounts.
-- Attempting transactions with zero or negative amounts.
-- Attempting withdrawals with insufficient funds.
-- Transferring money between accounts.
-- Validating contact numbers and PIN codes.
+- Creating a shipment with valid associated entities.
+- Rejecting duplicate tracking numbers.
+- Calculating shipping charges based on package weight.
+- Applying additional charges for fragile packages.
+- Preventing assignment to unavailable delivery agents.
+- Updating shipment status and recording tracking history.
+- Retrieving shipment details using a tracking number.
+- Validating missing or invalid request data.
 
 ## 🎯 Learning Outcomes
 
-Through this project, I gained practical experience with:
+Through this project, I gained practical experience in:
 
-- Developing RESTful web services using Spring Boot.
-- Implementing layered architecture in a Java backend application.
-- Using Spring Data JPA and Hibernate for ORM and database operations.
-- Designing entity relationships and repository interfaces.
-- Connecting a Spring Boot application to PostgreSQL.
-- Implementing business logic and input validation.
-- Testing REST APIs using Postman.
-- Handling database operations through a service and repository layer.
+- Building RESTful web services with Spring Boot.
+- Implementing layered architecture in Java applications.
+- Mapping entity relationships using JPA and Hibernate.
+- Integrating PostgreSQL with Spring Boot.
+- Implementing shipment pricing and logistics business rules.
+- Managing shipment status and tracking history.
+- Using Spring Data JPA repositories for database operations.
+- Testing and validating REST APIs using Postman.
 
 ## 🔮 Future Enhancements
 
-- Implement authentication and role-based authorization using Spring Security.
-- Add transaction history and account statements.
-- Introduce centralized exception handling.
+- Implement authentication and role-based access control using Spring Security.
+- Add real-time shipment tracking and delivery notifications.
+- Integrate Google Maps or another mapping service for delivery routes.
+- Add pagination and sorting to listing APIs.
+- Implement centralized exception handling.
 - Add unit and integration tests.
-- Implement pagination and sorting.
-- Add API documentation using Swagger/OpenAPI.
+- Document APIs using Swagger/OpenAPI.
 - Containerize the application using Docker.
 
 ## 👨‍💻 Author
