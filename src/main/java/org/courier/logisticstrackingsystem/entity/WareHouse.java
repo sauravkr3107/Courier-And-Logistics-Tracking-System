@@ -30,6 +30,6 @@ public class WareHouse {
 	private String contactNumber;
 	
 	@JsonIgnore
-	@OneToMany(mappedBy = "shipment")
-	private List<WareHouse> wareHouses;
+	@OneToMany(mappedBy = "wareHouse")
+	private List<Shipment> shipments;
 }

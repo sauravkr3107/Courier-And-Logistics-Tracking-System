@@ -64,7 +64,7 @@ public class DeliveryAgentController {
 		return deliveryAgentService.deleteDeliveryAgent(deliveryAgentId);
 	}
 	
-	@PatchMapping("/deliveryAgentId/{deliveryAgentId}")
+	@PatchMapping("/deliveryAgentId/{deliveryAgentId}/availability")
 	public ResponseEntity<ResponseStructure<DeliveryAgent>> updateDeliveryAgentAvailablity(@PathVariable Integer deliveryAgentId) {
 		return deliveryAgentService.updateDeliveryAgentAvailablity(deliveryAgentId);
 	}
